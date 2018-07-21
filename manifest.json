@@ -1,0 +1,16 @@
+{
+    "name": "Pin youtube App!",
+    "description": "My first Chrome App.",
+    "version": "0.1",
+    "manifest_version": 2,
+    "app": {
+      "background": {
+        "scripts": ["js/loadash.js", "js/jquery.js", "js/background.js"]
+      }
+    },
+    "icons": { "16": "images/icon16.png", "128": "images/icon128.png" },
+    "permissions": [
+      "alwaysOnTopWindows",
+      "webview"
+    ]
+  }
