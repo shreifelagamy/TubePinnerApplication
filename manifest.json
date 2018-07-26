@@ -11,6 +11,7 @@
     "icons": { "16": "images/icon16.png", "128": "images/icon128.png" },
     "permissions": [
       "alwaysOnTopWindows",
-      "webview"
+      "webview",
+      "fullscreen"
     ]
   }

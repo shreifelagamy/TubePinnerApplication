@@ -23,59 +23,6 @@ function createWindow(url, type = 'youtube') {
   
 }
 
-// parse parameter from url
-function getUrlVars(url, variable) {
-  var vars = {},
-    hash,
-    hashes = url.slice(url.indexOf('?') + 1).split('&');
-
-  for (var i = 0, len = hashes.length; i < len; i += 1) {
-    hash = hashes[i].split('=');
-    vars[hash[0]] = hash[1];
-  }
-  return vars[variable];
-}
-
-// parse video id from url
-function parseId(url) {
-  // http://stackoverflow.com/a/14701040
-  var match = /^.*(youtube.com\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/.exec(url);
-
-  if (match instanceof Array && match[2] !== undefined) {
-    return match[2];
-  } else {
-    return false;
-  }
-}
-
-// load webview
-function webview(url, time) {
-
-  url = url.replace(/^\s+|\s+$/g, ''); // remove newlines
-
-  var videoId = parseId(url),
-    listId = getUrlVars(url, 'list'),
-    embedUrl = '';
-
-  if (videoId) {
-    embedUrl = 'http://www.youtube.com/embed/' + videoId + '?';
-
-    if (typeof listId !== 'undefined') {
-      embedUrl += 'list=' + listId;
-    } else {
-      embedUrl += 'autoplay=1';
-
-      if (typeof time !== 'undefined' && time !== false) {
-        embedUrl += '&start=' + time;
-      }
-    }
-
-    return embedUrl;
-  } else {
-    return false;
-  }
-}
-
 function setFormVideoValues(appwindow, url, type) {
   var body = appwindow.contentWindow.document.getElementsByTagName('body')[0]
     // width = 600-100,
