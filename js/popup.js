@@ -1,7 +1,9 @@
 var webview;
+var extId = 'gdomlckgcnapccdieneppampndclkdels';
 
 $(document).ready(function () {
     removeLoading()
+    checkExtenstionExist()
     
     $('#queryForm').on('submit', function (e) {
         e.preventDefault();
@@ -9,14 +11,13 @@ $(document).ready(function () {
         var url = $(this).find('input').val();
 
         // TODO: check if input field in empty
-        $('body').css('margin', 0)
         $('body .container-div').html('<webview style="width:100%; height:100%"></webview>');
-
         webview = document.querySelector('webview')
 
-        setWebView(url)
-        beginListeners()
         $('.overlay').removeClass('hide')
+        fixContainerstyle()
+        setWebView(url)
+        beginWebviewListeners()
     })
 })
 
@@ -40,9 +41,10 @@ window.addEventListener('load', function () {
 function removeLoading() {
     var body = document.querySelector('body'),
         loadingDiv = document.querySelector('.overlay'),
-        form = document.querySelector('#queryForm')
+        form = document.querySelector('#queryForm'),
+        webview = document.querySelector('webview')
     
-    if( body.classList.contains('external') || form !== null ) 
+    if( form !== null || webview !== null) 
         loadingDiv.classList.add('hide')
 }
 
@@ -145,4 +147,12 @@ function parseId(url) {
     } else {
         return false;
     }
+}
+
+// check if extentsion exist
+function checkExtenstionExist() {
+    chrome.runtime.sendMessage(extId, { action: 'doYouExist' }, function (response) {
+        if( !response )
+            $('#ext-dwn').removeClass('hide')
+    })
 }
