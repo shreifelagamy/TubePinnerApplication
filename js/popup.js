@@ -1,58 +1,96 @@
+var webview;
+
 $(document).ready(function () {
+    removeLoading()
+    
     $('#queryForm').on('submit', function (e) {
         e.preventDefault();
-        var url = $(this).find('input').val(),
-            width = 600,
-            height = 480 - 30;
+
+        var url = $(this).find('input').val();
 
         // TODO: check if input field in empty
         $('body').css('margin', 0)
-        $('body .container').css({
-            'width': '600px',
-            'height': '480px',
-            'margin': 0,
-            'padding': 0
-        }).html('<webview style="width:' + width + 'px; height:' + height + 'px"></webview>');
+        $('body .container-div').html('<webview style="width:100%; height:100%"></webview>');
+
+        webview = document.querySelector('webview')
 
         setWebView(url)
-
         beginListeners()
-
         $('.overlay').removeClass('hide')
-        $('webview').on('loadstop', function () {
-            $('.overlay').addClass('hide')
-        })
     })
-
-    $(window).resize(function () {
-        $('webview').css({
-            'width': window.innerWidth,
-            "height": window.innerHeight
-        })
-    })
-}).ajaxSend(function (event, jqxhr, settings) {
-    console.log(settings);
 })
 
-// handle loading new content in webview
-function beginListeners() {
-    var webview = document.querySelector('webview')
-    webview.addEventListener('newwindow', function (e) {
-        e.preventDefault();
-        setWebView(e.targetUrl)
+window.addEventListener('resize', function () {
+    $('body').css({
+        'width': window.innerWidth,
+        "height": window.innerHeight
     })
+})
 
-    webview.addEventListener('permissionrequest', function (e) {
-        if (e.permission === 'fullscreen') {
-            e.request.allow();
-        }
-    });
+window.addEventListener('load', function () {
+    webview = document.querySelector('webview')
+    if (webview !== null) {
+        // check if webview is not null
+        beginWebviewListeners()
+        fixContainerstyle()
+    }
+})
+
+// remove loading div
+function removeLoading() {
+    var body = document.querySelector('body'),
+        loadingDiv = document.querySelector('.overlay'),
+        form = document.querySelector('#queryForm')
+    
+    if( body.classList.contains('external') || form !== null ) 
+        loadingDiv.classList.add('hide')
+}
+
+// Fix body container style
+function fixContainerstyle() {
+    if (webview !== null) {
+        $('body').css({
+            'margin': 0,
+            'width': window.innerWidth,
+            'height': window.innerHeight
+        })
+        $('body .container-div').css({
+            'width': '100%',
+            'height': '100%',
+            'margin': 0,
+            'padding': 0
+        });
+    }
+}
+
+// handle loading new content in webview
+function beginWebviewListeners() {
+    if (webview !== null) {
+        webview.addEventListener('newwindow', newWindowRequest)
+        webview.addEventListener('permissionrequest', webviewPermissionRequest);
+        webview.addEventListener('loadstop', webviewLoadStop);
+    }
+}
+
+function webviewLoadStop(e) {
+    removeLoading()
+}
+
+function newWindowRequest(e) {
+    e.preventDefault();
+    setWebView(e.targetUrl)
+}
+
+function webviewPermissionRequest(e) {
+    if (e.permission === 'fullscreen') {
+        e.request.allow();
+    }
 }
 
 function setWebView(url) {
     var url = parseUrl(url)
-    if (url )
-        document.querySelector('webview').src = url;
+    if (url)
+        webview.src = url;
 }
 
 function parseUrl(url) {

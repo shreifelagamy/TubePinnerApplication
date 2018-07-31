@@ -20,18 +20,21 @@ function createWindow(url, type = 'youtube') {
     };
 
   });
-  
+
 }
 
 function setFormVideoValues(appwindow, url, type) {
-  var body = appwindow.contentWindow.document.getElementsByTagName('body')[0]
+  var container = appwindow.contentWindow.document.querySelector('.container-div')
+    body = appwindow.contentWindow.document.querySelector('body'),
     // width = 600-100,
     width = 600,
-    height = 480-20;
+    height = 480;
 
-  body.innerHTML = '<webview style="width:' + width + 'px; height:' + height + 'px"></webview>';
-  body.querySelector('webview').src = !_.includes(url, 'http') && !_.includes(url, 'https') ? 'https:'+url : url;
-  body.style.margin = 0
+  container.innerHTML = '<webview style="width:100%; height:100%"></webview>';
+  var webview = container.querySelector('webview')
+  webview.src = !_.includes(url, 'http') && !_.includes(url, 'https') ? 'https:' + url : url;
+
+  body.classList.add('external')
 }
 
 chrome.app.runtime.onLaunched.addListener(function () {
