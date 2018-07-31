@@ -12,6 +12,7 @@
     "permissions": [
       "alwaysOnTopWindows",
       "webview",
-      "fullscreen"
+      "fullscreen",
+      "notifications"
     ]
   }

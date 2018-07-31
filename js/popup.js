@@ -1,5 +1,5 @@
 var webview;
-var extId = 'gdomlckgcnapccdieneppampndclkdels';
+var extId = 'gdomlckgcnapccdieneppampndclkdel';
 
 $(document).ready(function () {
     removeLoading()
@@ -8,7 +8,25 @@ $(document).ready(function () {
     $('#queryForm').on('submit', function (e) {
         e.preventDefault();
 
-        var url = $(this).find('input').val();
+        var url = $(this).find('input').val(),
+            notOptions = {
+                type: 'basic',
+                iconUrl: '../images/icon48.png',
+                title: "Error",
+            };
+
+        if(!url) {
+            notOptions.message = "you can't leave input field empty"
+
+            chrome.notifications.create('', notOptions)
+            return false;
+        }
+        else if(!parseId(url) || !_.includes(url, 'youtube')) {
+            notOptions.message =  "enter a valid youtube link"
+
+            chrome.notifications.create('', notOptions)
+            return false;
+        }
 
         // TODO: check if input field in empty
         $('body .container-div').html('<webview style="width:100%; height:100%"></webview>');
@@ -39,8 +57,7 @@ window.addEventListener('load', function () {
 
 // remove loading div
 function removeLoading() {
-    var body = document.querySelector('body'),
-        loadingDiv = document.querySelector('.overlay'),
+    var loadingDiv = document.querySelector('.overlay'),
         form = document.querySelector('#queryForm'),
         webview = document.querySelector('webview')
     
